@@ -1,0 +1,2 @@
+concept 1 consider 1 global 1 entropy 1 go 1
+externally 1 global 2 dynamic 2 resistance 1
