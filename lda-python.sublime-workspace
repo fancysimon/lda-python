@@ -8,18 +8,18 @@
 	"buffers":
 	[
 		{
-			"file": "lda.py",
+			"file": "sampler.py",
 			"settings":
 			{
-				"buffer_size": 0,
+				"buffer_size": 434,
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "README",
+			"file": "model.py",
 			"settings":
 			{
-				"buffer_size": 13,
+				"buffer_size": 1571,
 				"line_ending": "Windows"
 			}
 		}
@@ -48,6 +48,8 @@
 	},
 	"file_history":
 	[
+		"/C/Users/simonxiong/AppData/Roaming/Sublime Text 2/Packages/Default/Preferences.sublime-settings",
+		"/E/Kuaipan/Project/machine_learning/lda-python/lda.py",
 		"/E/Kuaipan/Project/machine_learning/lda-python/README",
 		"/E/Kuaipan/Code/Open Code/lda-0.2-matlab/lda-0.2-matlab/isint.m",
 		"/E/Kuaipan/Code/Open Code/lda-0.2-matlab/lda-0.2-matlab/assert.m",
@@ -57,14 +59,13 @@
 		"/E/快盘/Code/Open Code/lda-0.2-matlab/lda-0.2-matlab/lda.m",
 		"/E/快盘/Code/Open Code/lda-0.2-matlab/lda-0.2-matlab/features.m",
 		"/E/快盘/Code/Open Code/lda-0.2/lda-0.2/lda.c",
-		"/C/Users/simonxiong/AppData/Roaming/Sublime Text 2/Packages/Default/Preferences.sublime-settings",
 		"/C/Users/simonxiong/AppData/Roaming/Sublime Text 2/Packages/User/Preferences.sublime-settings",
 		"/E/快盘/Code/Open Code/lda-0.2/lad-0.2.sublime-workspace",
 		"/E/快盘/Code/Open Code/lda-0.2/lda-0.2/gamma.h"
 	],
 	"find":
 	{
-		"height": 0.0
+		"height": 38.0
 	},
 	"find_in_files":
 	{
@@ -78,6 +79,7 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"term"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -85,6 +87,7 @@
 		"regex": false,
 		"replace_history":
 		[
+			"word"
 		],
 		"reverse": false,
 		"show_context": true,
@@ -95,15 +98,15 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 1,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "lda.py",
+					"file": "sampler.py",
 					"settings":
 					{
-						"buffer_size": 0,
+						"buffer_size": 434,
 						"regions":
 						{
 						},
@@ -116,7 +119,8 @@
 						],
 						"settings":
 						{
-							"syntax": "Packages/Python/Python.tmLanguage"
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
@@ -126,26 +130,27 @@
 				},
 				{
 					"buffer": 1,
-					"file": "README",
+					"file": "model.py",
 					"settings":
 					{
-						"buffer_size": 13,
+						"buffer_size": 1571,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								590,
+								590
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Text/Plain text.tmLanguage"
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 257.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -186,7 +191,7 @@
 	"menu_visible": true,
 	"replace":
 	{
-		"height": 0.0
+		"height": 70.0
 	},
 	"save_all_on_build": true,
 	"select_file":
