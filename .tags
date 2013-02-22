@@ -5,14 +5,28 @@
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	//
 Document	.\document.py	/^class Document(object):$/;"	c
+Iterator	.\document.py	/^	class Iterator(object):$/;"	c	class:Document
 Model	.\model.py	/^class Model(object):$/;"	c
 ModelIterator	.\model.py	/^	class ModelIterator(object):$/;"	c	class:Model
+OptionParser	.\lda.py	/^from optparse import OptionParser$/;"	i
 Sampler	.\sampler.py	/^class Sampler(object):$/;"	c
+__init__	.\document.py	/^		def __init__(self, document):$/;"	m	class:Document.Iterator
 __init__	.\document.py	/^	def __init__(self):$/;"	m	class:Document
 __init__	.\model.py	/^		def __init__(self):$/;"	m	class:Model.ModelIterator
 __init__	.\model.py	/^	def __init__(self, num_documents, num_topics, num_words):$/;"	m	class:Model
 __init__	.\sampler.py	/^	def __init__(self, alpha, beta):$/;"	m	class:Sampler
+done	.\document.py	/^		def done(self):$/;"	m	class:Document.Iterator
 done	.\model.py	/^		def done(self):$/;"	m	class:Model.ModelIterator
-load_data	.\document.py	/^	def load_data(self, data, word_id_map):$/;"	m	class:Document
-load_model	.\sampler.py	/^	def load_model(self, a):$/;"	m	class:Sampler
-sampler	.\lda.py	/^import sampler/;"	i
+init_model_given_corpus	.\sampler.py	/^	def init_model_given_corpus(self, corpus, model):$/;"	m	class:Sampler
+load_corpus	.\lda.py	/^def load_corpus(train_name, num_topics):$/;"	f
+load_document	.\document.py	/^	def load_document(self, data, word_id_map, num_topics):$/;"	m	class:Document
+main	.\lda.py	/^def main():$/;"	f
+next	.\document.py	/^		def next(self):$/;"	m	class:Document.Iterator
+parse_args	.\lda.py	/^def parse_args():$/;"	f
+print_debug_string	.\document.py	/^	def print_debug_string(self):$/;"	m	class:Document
+random	.\document.py	/^import random$/;"	i
+sample_loop	.\sampler.py	/^	def sample_loop(self, model):$/;"	m	class:Sampler
+topics	.\document.py	/^		def topics(self):$/;"	m	class:Document.Iterator
+word	.\document.py	/^		def word(self):$/;"	m	class:Document.Iterator
+word_topics	.\document.py	/^	def word_topics(self):$/;"	m	class:Document
+words	.\document.py	/^	def words(self):$/;"	m	class:Document

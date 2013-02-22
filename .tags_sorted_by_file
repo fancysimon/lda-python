@@ -1,7 +1,20 @@
 Document	document.py	/^class Document(object):$/;"	c
+Iterator	document.py	/^	class Iterator(object):$/;"	c	class:Document
+__init__	document.py	/^		def __init__(self, document):$/;"	m	class:Document.Iterator
 __init__	document.py	/^	def __init__(self):$/;"	m	class:Document
-load_data	document.py	/^	def load_data(self, data, word_id_map):$/;"	m	class:Document
-sampler	lda.py	/^import sampler/;"	i
+done	document.py	/^		def done(self):$/;"	m	class:Document.Iterator
+load_document	document.py	/^	def load_document(self, data, word_id_map, num_topics):$/;"	m	class:Document
+next	document.py	/^		def next(self):$/;"	m	class:Document.Iterator
+print_debug_string	document.py	/^	def print_debug_string(self):$/;"	m	class:Document
+random	document.py	/^import random$/;"	i
+topics	document.py	/^		def topics(self):$/;"	m	class:Document.Iterator
+word	document.py	/^		def word(self):$/;"	m	class:Document.Iterator
+word_topics	document.py	/^	def word_topics(self):$/;"	m	class:Document
+words	document.py	/^	def words(self):$/;"	m	class:Document
+OptionParser	lda.py	/^from optparse import OptionParser$/;"	i
+load_corpus	lda.py	/^def load_corpus(train_name, num_topics):$/;"	f
+main	lda.py	/^def main():$/;"	f
+parse_args	lda.py	/^def parse_args():$/;"	f
 Model	model.py	/^class Model(object):$/;"	c
 ModelIterator	model.py	/^	class ModelIterator(object):$/;"	c	class:Model
 __init__	model.py	/^		def __init__(self):$/;"	m	class:Model.ModelIterator
@@ -9,7 +22,8 @@ __init__	model.py	/^	def __init__(self, num_documents, num_topics, num_words):$/
 done	model.py	/^		def done(self):$/;"	m	class:Model.ModelIterator
 Sampler	sampler.py	/^class Sampler(object):$/;"	c
 __init__	sampler.py	/^	def __init__(self, alpha, beta):$/;"	m	class:Sampler
-load_model	sampler.py	/^	def load_model(self, a):$/;"	m	class:Sampler
+init_model_given_corpus	sampler.py	/^	def init_model_given_corpus(self, corpus, model):$/;"	m	class:Sampler
+sample_loop	sampler.py	/^	def sample_loop(self, model):$/;"	m	class:Sampler
 !_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
 !_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
 !_TAG_PROGRAM_VERSION	5.8	//
