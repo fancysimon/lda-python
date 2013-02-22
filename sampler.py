@@ -13,4 +13,5 @@ class Sampler(object):
 		self.__topic_word_sum = [0]*num_topics
 
 	def load_model(self, a):
+		pass
 		
