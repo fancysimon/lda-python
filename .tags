@@ -7,16 +7,18 @@
 Document	.\document.py	/^class Document(object):$/;"	c
 Iterator	.\document.py	/^	class Iterator(object):$/;"	c	class:Document
 Model	.\model.py	/^class Model(object):$/;"	c
-ModelIterator	.\model.py	/^	class ModelIterator(object):$/;"	c	class:Model
 OptionParser	.\lda.py	/^from optparse import OptionParser$/;"	i
 Sampler	.\sampler.py	/^class Sampler(object):$/;"	c
 __init__	.\document.py	/^		def __init__(self, document):$/;"	m	class:Document.Iterator
 __init__	.\document.py	/^	def __init__(self):$/;"	m	class:Document
-__init__	.\model.py	/^		def __init__(self):$/;"	m	class:Model.ModelIterator
 __init__	.\model.py	/^	def __init__(self, num_documents, num_topics, num_words):$/;"	m	class:Model
 __init__	.\sampler.py	/^	def __init__(self, alpha, beta):$/;"	m	class:Sampler
+compute_topic_distributions	.\sampler.py	/^	def compute_topic_distributions(self, model, document_id, topic, word):$/;"	m	class:Sampler
+decrement	.\model.py	/^	def decrement(self, document, topic, word, count):$/;"	m	class:Model
+document_topic_count	.\model.py	/^	def document_topic_count(self):$/;"	m	class:Model
 done	.\document.py	/^		def done(self):$/;"	m	class:Document.Iterator
-done	.\model.py	/^		def done(self):$/;"	m	class:Model.ModelIterator
+golobal_topic_count	.\model.py	/^	def golobal_topic_count(self):$/;"	m	class:Model
+increment	.\model.py	/^	def increment(self, document, topic, word, count):$/;"	m	class:Model
 init_model_given_corpus	.\sampler.py	/^	def init_model_given_corpus(self, corpus, model):$/;"	m	class:Sampler
 load_corpus	.\lda.py	/^def load_corpus(train_name, num_topics):$/;"	f
 load_document	.\document.py	/^	def load_document(self, data, word_id_map, num_topics):$/;"	m	class:Document
@@ -25,8 +27,11 @@ next	.\document.py	/^		def next(self):$/;"	m	class:Document.Iterator
 parse_args	.\lda.py	/^def parse_args():$/;"	f
 print_debug_string	.\document.py	/^	def print_debug_string(self):$/;"	m	class:Document
 random	.\document.py	/^import random$/;"	i
-sample_loop	.\sampler.py	/^	def sample_loop(self, model):$/;"	m	class:Sampler
+random	.\sampler.py	/^import random$/;"	i
+sample_loop	.\sampler.py	/^	def sample_loop(self, corpus, model):$/;"	m	class:Sampler
+sample_new_topic	.\sampler.py	/^	def sample_new_topic(self, topic_distributions):$/;"	m	class:Sampler
 topics	.\document.py	/^		def topics(self):$/;"	m	class:Document.Iterator
 word	.\document.py	/^		def word(self):$/;"	m	class:Document.Iterator
+word_topic_count	.\model.py	/^	def word_topic_count(self, word):$/;"	m	class:Model
 word_topics	.\document.py	/^	def word_topics(self):$/;"	m	class:Document
 words	.\document.py	/^	def words(self):$/;"	m	class:Document

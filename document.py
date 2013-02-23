@@ -24,6 +24,9 @@ class Document(object):
 		def topics(self):
 			return self.__document.word_topics()[self.__start_index]
 
+		def set_topic(self, topic_index, new_topic):
+			self.__document.set_topic(self.__start_index, topic_index, new_topic)
+
 	def __init__(self):
 		self.__words = []
 		self.__word_ids = []
@@ -45,10 +48,10 @@ class Document(object):
 				topics = []
 				for i in range(count):
 					# sample random topic
-					topics.append(random.randint(1, num_topics))
+					topics.append(random.randint(0, num_topics - 1))
 				if not word_id_map.has_key(word):
-					# word id start from 1
-					word_id = len(word_id_map) + 1
+					# word id start from 0
+					word_id = len(word_id_map)
 					word_id_map[word] = word_id
 				else:
 					word_id = word_id_map[word]
@@ -62,6 +65,12 @@ class Document(object):
 	def word_topics(self):
 		return self.__word_topics
 
-	def print_debug_string(self):
+	def debug_string(self):
+		debug_string = ""
 		for i in range(len(self.__word_ids)):
-			print self.__words[i], "(", self.__word_ids[i], "):", self.__word_topics[i]
+			debug_string += self.__words[i] + "(" + str(self.__word_ids[i]) + "):" + \
+					str(self.__word_topics[i]) + "\n"
+		return debug_string
+
+	def set_topic(self, word_index, topic_index, new_topic):
+		self.__word_topics[word_index][topic_index] = new_topic

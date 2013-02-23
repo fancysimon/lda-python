@@ -16,14 +16,19 @@ load_corpus	lda.py	/^def load_corpus(train_name, num_topics):$/;"	f
 main	lda.py	/^def main():$/;"	f
 parse_args	lda.py	/^def parse_args():$/;"	f
 Model	model.py	/^class Model(object):$/;"	c
-ModelIterator	model.py	/^	class ModelIterator(object):$/;"	c	class:Model
-__init__	model.py	/^		def __init__(self):$/;"	m	class:Model.ModelIterator
 __init__	model.py	/^	def __init__(self, num_documents, num_topics, num_words):$/;"	m	class:Model
-done	model.py	/^		def done(self):$/;"	m	class:Model.ModelIterator
+decrement	model.py	/^	def decrement(self, document, topic, word, count):$/;"	m	class:Model
+document_topic_count	model.py	/^	def document_topic_count(self):$/;"	m	class:Model
+golobal_topic_count	model.py	/^	def golobal_topic_count(self):$/;"	m	class:Model
+increment	model.py	/^	def increment(self, document, topic, word, count):$/;"	m	class:Model
+word_topic_count	model.py	/^	def word_topic_count(self, word):$/;"	m	class:Model
 Sampler	sampler.py	/^class Sampler(object):$/;"	c
 __init__	sampler.py	/^	def __init__(self, alpha, beta):$/;"	m	class:Sampler
+compute_topic_distributions	sampler.py	/^	def compute_topic_distributions(self, model, document_id, topic, word):$/;"	m	class:Sampler
 init_model_given_corpus	sampler.py	/^	def init_model_given_corpus(self, corpus, model):$/;"	m	class:Sampler
-sample_loop	sampler.py	/^	def sample_loop(self, model):$/;"	m	class:Sampler
+random	sampler.py	/^import random$/;"	i
+sample_loop	sampler.py	/^	def sample_loop(self, corpus, model):$/;"	m	class:Sampler
+sample_new_topic	sampler.py	/^	def sample_new_topic(self, topic_distributions):$/;"	m	class:Sampler
 !_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
 !_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
 !_TAG_PROGRAM_VERSION	5.8	//

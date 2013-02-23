@@ -5,45 +5,40 @@
 class Model(object):
 	"""LDA Model"""
 	def __init__(self, num_documents, num_topics, num_words):
-		# number document, topic and word from 1
-		num_documents += 1
-		num_topics += 1
-		num_words += 1
 		self.__document_topic_count = [[0]*num_topics for i in range(num_documents)]
-		self.__document_topic_sum = [0]*num_documents
-		self.__topic_word_count = [[0]*num_words for i in range(num_topics)]
-		self.__topic_word_sum = [0]*num_topics
+		self.__word_topic_count = [[0]*num_topics for i in range(num_words)]
+		self.__golobal_topic_count = [0]*num_topics
 
-	# def increment_topic(self, document, topic, word, count):
-	# 	self.__document_topic_count[document][topic] += count
-	# 	self.__document_topic_sum[document] += count
-	# 	self.__topic_word_count[topic][word] += count
-	# 	self.__topic_word_sum[topic] += count
+	def increment(self, document, topic, word, count):
+		self.__document_topic_count[document][topic] += count
+		self.__word_topic_count[word][topic] += count
+		self.__golobal_topic_count[topic] += count
 
-	# def decrement_topic(self, document, topic, word, count):
-	# 	assert(self.__document_topic_count[document][topic] >= count)
-	# 	assert(self.__document_topic_sum[document] >= count)
-	# 	assert(self.__topic_word_count[topic][word] >= count)
-	# 	assert(self.__topic_word_sum[topic] >= count)
-	# 	increment_topic(document, topic, word, -count)
+	def decrement(self, document, topic, word, count):
+		assert(self.__document_topic_count[document][topic] >= count)
+		assert(self.__word_topic_count[word][topic] >= count)
+		assert(self.__golobal_topic_count[topic] >= count)
+		self.increment(document, topic, word, -count)
 
-	# def document_topic_count(self, document, topic):
-	# 	return self.__document_topic_count[document][topic]
+	def document_topic_count(self):
+		return self.__document_topic_count
 
-	# def document_topic_sum(self, document):
-	# 	return self.__document_topic_sum[document]
+	def word_topic_count(self, word):
+		return self.__word_topic_count[word]
 
-	# def topic_word_count(self, document, topic):
-	# 	return self.__topic_word_count[topic][word]
+	def golobal_topic_count(self):
+		return self.__golobal_topic_count
 
-	# def topic_word_sum(self, document):
-	# 	return self.__topic_word_sum[topic]
+	def num_topics(self):
+		return len(self.golobal_topic_count())
 
-	class ModelIterator(object):
-		"""Iterator for model"""
-		def __init__(self):
-			pass
+	def num_words(self):
+		return len(self.__word_topic_count)
 
-		def done(self):
-			pass
-			
+	def compute_model_param(self):
+		pass
+
+	def save_model(self, model_prefix):
+		theta_file = model_prefix + ".theta"
+		phi_file = model_prefix + ".phi"
+
