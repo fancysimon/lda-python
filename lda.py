@@ -16,13 +16,13 @@ def parse_args():
 	parser.add_option("-k", "--num_topics", dest="num_topics", type="int", help="topic numbers")
 	parser.add_option("--train_name", dest="train_name", type="string", default="train.txt",
 						help="file name of taining data")
+	parser.add_option("--model_name", dest="model_name", type="string", default="model.txt",
+						help="file prefix of model")
 	parser.add_option("--total_iterations", dest="total_iterations", type="int", 
 						default=100, help="total iterations")
 	parser.add_option("--burn_in_iterations", dest="burn_in_iterations", type="int", 
 						default=50, help="burn in iterations")
-	parser.add_option("--model_name", dest="model_name", type="string", default="model.txt",
-						help="file prefix of model")
-	
+
 	(options, args) = parser.parse_args()
 	if not options.num_topics:
 		print "num_topics must be specified.\n"
@@ -53,7 +53,8 @@ def main():
 		print d.debug_string()
 
 	sampler = Sampler(options.alpha, options.beta)
-	model = Model(len(corpus), options.num_topics, len(word_id_map))
+	model = Model()
+	model.init_model(len(corpus), options.num_topics, len(word_id_map))
 	sampler.init_model_given_corpus(corpus, model)
 	for i in range(options.total_iterations):
 		sampler.sample_loop(corpus, model)

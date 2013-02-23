@@ -4,10 +4,36 @@
 
 class Model(object):
 	"""LDA Model"""
-	def __init__(self, num_documents, num_topics, num_words):
+	def __init__(self):
+		pass
+
+	def init_model(self, num_documents, num_topics, num_words):
 		self.__document_topic_count = [[0]*num_topics for i in range(num_documents)]
 		self.__word_topic_count = [[0]*num_topics for i in range(num_words)]
 		self.__golobal_topic_count = [0]*num_topics
+
+	def load_model(self, model_filename, word_id_map):
+		model_file = open(model_filename, "r")
+		self.__word_topic_count = []
+		for line in model_file:
+			if len(line) == 0 or line[0] == "\n" or line[0] == "\r" or line[0] == "#":
+				continue
+			s = line.strip().split("\t")
+			if len(s) < 2:
+				print "model file has some error, error line is", line
+			word = s[0]
+			topic_counts = [int(x) for x in s[1].split(" ")]
+			word_id = len(word_id_map)
+			word_id_map[word] = word_id
+			self.__word_topic_count.append(topic_counts)
+
+		num_topics = len(self.__word_topic_count[0])
+		self.__golobal_topic_count = [0] * num_topics
+		for topic_counts in self.__word_topic_count:
+			for topic in range(len(topic_counts)):
+				self.__golobal_topic_count[topic] += topic_counts[topic]
+
+		model_file.close()
 
 	def increment(self, document, topic, word, count):
 		self.__document_topic_count[document][topic] += count
