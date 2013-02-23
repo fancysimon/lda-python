@@ -51,8 +51,8 @@ def load_corpus(train_name, num_topics):
 def main():
 	options = parse_args()
 	corpus, word_id_map = load_corpus(options.train_name, options.num_topics)
-	for d in corpus:
-		print d.debug_string()
+	# for d in corpus:
+	# 	print d.debug_string()
 
 	sampler = Sampler(options.alpha, options.beta)
 	model = Model()
