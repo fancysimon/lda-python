@@ -35,10 +35,16 @@ class Model(object):
 	def num_words(self):
 		return len(self.__word_topic_count)
 
-	def compute_model_param(self):
-		pass
-
-	def save_model(self, model_prefix):
-		theta_file = model_prefix + ".theta"
-		phi_file = model_prefix + ".phi"
+	def save_model(self, model_filename, word_id_map):
+		model_file = open(model_filename, "w")
+		id_word_map = [0] * len(word_id_map)
+		for word, id in word_id_map.items():
+			id_word_map[id] = word
+		# write word and it's topic distribution
+		for word_id in range(self.num_words()):
+			model_file.write(id_word_map[word_id] + "\t")
+			for count in self.__word_topic_count[word_id]:
+				model_file.write(str(count) + " ")
+			model_file.write("\n")
+		model_file.close()
 

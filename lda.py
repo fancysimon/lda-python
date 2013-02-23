@@ -20,7 +20,7 @@ def parse_args():
 						default=100, help="total iterations")
 	parser.add_option("--burn_in_iterations", dest="burn_in_iterations", type="int", 
 						default=50, help="burn in iterations")
-	parser.add_option("--model_name", dest="model_name", type="string", default="model",
+	parser.add_option("--model_name", dest="model_name", type="string", default="model.txt",
 						help="file prefix of model")
 	
 	(options, args) = parser.parse_args()
@@ -43,6 +43,7 @@ def load_corpus(train_name, num_topics):
 		document = Document()
 		document.load_document(line, word_id_map, num_topics)
 		corpus.append(document)
+	train_file.close()
 	return corpus, word_id_map
 
 def main():
@@ -56,7 +57,7 @@ def main():
 	sampler.init_model_given_corpus(corpus, model)
 	for i in range(options.total_iterations):
 		sampler.sample_loop(corpus, model)
-	model.save_model(options.model_name)
+	model.save_model(options.model_name, word_id_map)
 
 if __name__ == "__main__":
 	main()
