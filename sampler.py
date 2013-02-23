@@ -2,6 +2,7 @@
 #
 # Gibbs Sampling for LDA
 
+import math
 import random
 from document import *
 
@@ -40,7 +41,7 @@ class Sampler(object):
 		num_topics = model.num_topics()
 		num_words = model.num_words()
 		topic_distributions = [0] * num_topics
-		word_topic_count = model.word_topic_count(word)
+		word_topic_count = model.word_topic_count()[word]
 		golobal_topic_count = model.golobal_topic_count()
 		document_topic_count = model.document_topic_count()
 		for topic in range(num_topics):
@@ -63,3 +64,43 @@ class Sampler(object):
 			if sum_so_far >= sample_distribution:
 				return i
 		return -1
+
+	def compute_log_likehood(self, corpus, model):
+		"""Compute log P(corpus) = sum_d log P(d),
+		where log P(d) = sum_w log P(w), where P(w) = sum_z P(w|z)P(z|d).
+		"""
+		log_likehood_corpus = 0.0
+		for document_id in range(len(corpus)):
+			document = corpus[document_id]
+			iter = Document.Iterator(document)
+			# Compute P(z|d) for the document and all topics.
+			prob_topic_given_document = []
+			num_topics = model.num_topics()
+			document_topic_sum = sum(model.document_topic_count()[document_id])
+			for topic in range(num_topics):
+				prob_topic_given_document.append(
+						(model.document_topic_count()[document_id][topic] + self.__alpha) /
+						(document_topic_sum + self.__alpha * num_topics))
+
+			log_likehood = 0.0
+			while not iter.done():
+				# Compute P(w|z) for word and given topic.
+				word = iter.word()
+				prob_word_given_topic = []
+				word_topic_sum = sum(model.word_topic_count()[word])
+				for topic in range(num_topics):
+					prob_word_given_topic.append(
+							(model.word_topic_count()[word][topic] + self.__beta) /
+							(word_topic_sum + self.__beta * num_topics))
+
+				# Compute P(w) = sum_z P(w|z)P(z|d)
+				prob_word = 0
+				for topic in range(num_topics):
+					prob_word += prob_word_given_topic[topic] * prob_topic_given_document[topic]
+				log_likehood += math.log(prob_word)
+
+				iter.next()
+
+			log_likehood_corpus += log_likehood
+			
+		return log_likehood_corpus

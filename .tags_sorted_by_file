@@ -2,30 +2,42 @@ Document	document.py	/^class Document(object):$/;"	c
 Iterator	document.py	/^	class Iterator(object):$/;"	c	class:Document
 __init__	document.py	/^		def __init__(self, document):$/;"	m	class:Document.Iterator
 __init__	document.py	/^	def __init__(self):$/;"	m	class:Document
+debug_string	document.py	/^	def debug_string(self):$/;"	m	class:Document
 done	document.py	/^		def done(self):$/;"	m	class:Document.Iterator
 load_document	document.py	/^	def load_document(self, data, word_id_map, num_topics):$/;"	m	class:Document
 next	document.py	/^		def next(self):$/;"	m	class:Document.Iterator
-print_debug_string	document.py	/^	def print_debug_string(self):$/;"	m	class:Document
 random	document.py	/^import random$/;"	i
+set_topic	document.py	/^		def set_topic(self, topic_index, new_topic):$/;"	m	class:Document.Iterator
+set_topic	document.py	/^	def set_topic(self, word_index, topic_index, new_topic):$/;"	m	class:Document
 topics	document.py	/^		def topics(self):$/;"	m	class:Document.Iterator
 word	document.py	/^		def word(self):$/;"	m	class:Document.Iterator
 word_topics	document.py	/^	def word_topics(self):$/;"	m	class:Document
 words	document.py	/^	def words(self):$/;"	m	class:Document
+OptionParser	infer.py	/^from optparse import OptionParser$/;"	i
+main	infer.py	/^def main():$/;"	f
+parse_args	infer.py	/^def parse_args():$/;"	f
 OptionParser	lda.py	/^from optparse import OptionParser$/;"	i
 load_corpus	lda.py	/^def load_corpus(train_name, num_topics):$/;"	f
 main	lda.py	/^def main():$/;"	f
 parse_args	lda.py	/^def parse_args():$/;"	f
 Model	model.py	/^class Model(object):$/;"	c
-__init__	model.py	/^	def __init__(self, num_documents, num_topics, num_words):$/;"	m	class:Model
+__init__	model.py	/^	def __init__(self):$/;"	m	class:Model
 decrement	model.py	/^	def decrement(self, document, topic, word, count):$/;"	m	class:Model
 document_topic_count	model.py	/^	def document_topic_count(self):$/;"	m	class:Model
 golobal_topic_count	model.py	/^	def golobal_topic_count(self):$/;"	m	class:Model
 increment	model.py	/^	def increment(self, document, topic, word, count):$/;"	m	class:Model
+init_model	model.py	/^	def init_model(self, num_documents, num_topics, num_words):$/;"	m	class:Model
+load_model	model.py	/^	def load_model(self, model_filename, word_id_map):$/;"	m	class:Model
+num_topics	model.py	/^	def num_topics(self):$/;"	m	class:Model
+num_words	model.py	/^	def num_words(self):$/;"	m	class:Model
+save_model	model.py	/^	def save_model(self, model_filename, word_id_map):$/;"	m	class:Model
 word_topic_count	model.py	/^	def word_topic_count(self, word):$/;"	m	class:Model
 Sampler	sampler.py	/^class Sampler(object):$/;"	c
 __init__	sampler.py	/^	def __init__(self, alpha, beta):$/;"	m	class:Sampler
+compute_log_likehood	sampler.py	/^	def compute_log_likehood(self, corpus, model):$/;"	m	class:Sampler
 compute_topic_distributions	sampler.py	/^	def compute_topic_distributions(self, model, document_id, topic, word):$/;"	m	class:Sampler
 init_model_given_corpus	sampler.py	/^	def init_model_given_corpus(self, corpus, model):$/;"	m	class:Sampler
+math	sampler.py	/^import math$/;"	i
 random	sampler.py	/^import random$/;"	i
 sample_loop	sampler.py	/^	def sample_loop(self, corpus, model):$/;"	m	class:Sampler
 sample_new_topic	sampler.py	/^	def sample_new_topic(self, topic_distributions):$/;"	m	class:Sampler

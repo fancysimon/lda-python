@@ -49,8 +49,8 @@ class Model(object):
 	def document_topic_count(self):
 		return self.__document_topic_count
 
-	def word_topic_count(self, word):
-		return self.__word_topic_count[word]
+	def word_topic_count(self):
+		return self.__word_topic_count
 
 	def golobal_topic_count(self):
 		return self.__golobal_topic_count

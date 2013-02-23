@@ -19,9 +19,11 @@ def parse_args():
 	parser.add_option("--model_name", dest="model_name", type="string", default="model.txt",
 						help="file prefix of model")
 	parser.add_option("--total_iterations", dest="total_iterations", type="int", 
-						default=100, help="total iterations")
+						default=10, help="total iterations")
 	parser.add_option("--burn_in_iterations", dest="burn_in_iterations", type="int", 
-						default=50, help="burn in iterations")
+						default=5, help="burn in iterations")
+	parser.add_option("--compute_loglikehood", dest="compute_loglikehood", action="store_true",
+						help="compute loglikehood")
 
 	(options, args) = parser.parse_args()
 	if not options.num_topics:
@@ -57,7 +59,10 @@ def main():
 	model.init_model(len(corpus), options.num_topics, len(word_id_map))
 	sampler.init_model_given_corpus(corpus, model)
 	for i in range(options.total_iterations):
+		print "Iteration:", i
 		sampler.sample_loop(corpus, model)
+		if options.compute_loglikehood:
+			print "    Loglikehood:", sampler.compute_log_likehood(corpus, model)
 	model.save_model(options.model_name, word_id_map)
 
 if __name__ == "__main__":
