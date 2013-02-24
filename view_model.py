@@ -30,7 +30,7 @@ def view_model(model_file, result_file):
 	for line in model_file:
 		s = line.strip().split('\t')
 		word = s[0]
-		topic_counts = [int(x) for x in s[1].split(' ')]
+		topic_counts = [float(x) for x in s[1].split(' ')]
 		num_topics = len(topic_counts)
 		for k in range(num_topics):
 			count = topic_counts[k]

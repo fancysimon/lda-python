@@ -3,6 +3,7 @@
 # LDA
 
 from optparse import OptionParser
+import random
 
 from document import *
 from model import *
@@ -50,6 +51,7 @@ def load_corpus(train_name, num_topics):
 
 def main():
 	options = parse_args()
+	random.seed()
 	corpus, word_id_map = load_corpus(options.train_name, options.num_topics)
 	# for d in corpus:
 	# 	print d.debug_string()
@@ -63,7 +65,7 @@ def main():
 		sampler.sample_loop(corpus, model)
 		if options.compute_loglikehood:
 			print "    Loglikehood:", sampler.compute_log_likehood(corpus, model)
-		if i > options.burn_in_iterations:
+		if i >= options.burn_in_iterations:
 			model.accumulate_model()
 	model.average_accumulative_model()
 	model.save_model(options.model_name, word_id_map)

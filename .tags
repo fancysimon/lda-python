@@ -13,37 +13,55 @@ Sampler	.\sampler.py	/^class Sampler(object):$/;"	c
 __init__	.\document.py	/^		def __init__(self, document):$/;"	m	class:Document.Iterator
 __init__	.\document.py	/^	def __init__(self):$/;"	m	class:Document
 __init__	.\model.py	/^	def __init__(self):$/;"	m	class:Model
-__init__	.\sampler.py	/^	def __init__(self, alpha, beta):$/;"	m	class:Sampler
+__init__	.\sampler.py	/^	def __init__(self, alpha, beta, update_model=True):$/;"	m	class:Sampler
+accumulate_model	.\model.py	/^	def accumulate_model(self):$/;"	m	class:Model
+accumulate_model_for_inference	.\model.py	/^	def accumulate_model_for_inference(self):$/;"	m	class:Model
+average_accumulative_model	.\model.py	/^	def average_accumulative_model(self):$/;"	m	class:Model
+average_accumulative_model_for_inference	.\model.py	/^	def average_accumulative_model_for_inference(self):$/;"	m	class:Model
 compute_log_likehood	.\sampler.py	/^	def compute_log_likehood(self, corpus, model):$/;"	m	class:Sampler
 compute_topic_distributions	.\sampler.py	/^	def compute_topic_distributions(self, model, document_id, topic, word):$/;"	m	class:Sampler
 debug_string	.\document.py	/^	def debug_string(self):$/;"	m	class:Document
-decrement	.\model.py	/^	def decrement(self, document, topic, word, count):$/;"	m	class:Model
+decrement_document_topic	.\model.py	/^	def decrement_document_topic(self, document, topic, count):$/;"	m	class:Model
+decrement_model	.\sampler.py	/^	def decrement_model(self, model, document, topic, word, count):$/;"	m	class:Sampler
+decrement_topic	.\model.py	/^	def decrement_topic(self, topic, word, count):$/;"	m	class:Model
 document_topic_count	.\model.py	/^	def document_topic_count(self):$/;"	m	class:Model
 done	.\document.py	/^		def done(self):$/;"	m	class:Document.Iterator
 golobal_topic_count	.\model.py	/^	def golobal_topic_count(self):$/;"	m	class:Model
-increment	.\model.py	/^	def increment(self, document, topic, word, count):$/;"	m	class:Model
+increment_document_topic	.\model.py	/^	def increment_document_topic(self, document, topic, count):$/;"	m	class:Model
+increment_model	.\sampler.py	/^	def increment_model(self, model, document, topic, word, count):$/;"	m	class:Sampler
+increment_topic	.\model.py	/^	def increment_topic(self, topic, word, count):$/;"	m	class:Model
+init_document_model_given_corpus	.\model.py	/^	def init_document_model_given_corpus(self, corpus):$/;"	m	class:Model
 init_model	.\model.py	/^	def init_model(self, num_documents, num_topics, num_words):$/;"	m	class:Model
 init_model_given_corpus	.\sampler.py	/^	def init_model_given_corpus(self, corpus, model):$/;"	m	class:Sampler
+lda	.\infer.py	/^import lda$/;"	i
 load_corpus	.\lda.py	/^def load_corpus(train_name, num_topics):$/;"	f
 load_document	.\document.py	/^	def load_document(self, data, word_id_map, num_topics):$/;"	m	class:Document
-load_model	.\model.py	/^	def load_model(self, model_filename, word_id_map):$/;"	m	class:Model
+load_model	.\model.py	/^	def load_model(self, model_filename):$/;"	m	class:Model
 main	.\infer.py	/^def main():$/;"	f
 main	.\lda.py	/^def main():$/;"	f
+main	.\view_model.py	/^def main():$/;"	f
 math	.\sampler.py	/^import math$/;"	i
 next	.\document.py	/^		def next(self):$/;"	m	class:Document.Iterator
+num_documents	.\model.py	/^	def num_documents(self):$/;"	m	class:Model
 num_topics	.\model.py	/^	def num_topics(self):$/;"	m	class:Model
 num_words	.\model.py	/^	def num_words(self):$/;"	m	class:Model
 parse_args	.\infer.py	/^def parse_args():$/;"	f
 parse_args	.\lda.py	/^def parse_args():$/;"	f
 random	.\document.py	/^import random$/;"	i
+random	.\infer.py	/^import random$/;"	i
+random	.\lda.py	/^import random$/;"	i
 random	.\sampler.py	/^import random$/;"	i
 sample_loop	.\sampler.py	/^	def sample_loop(self, corpus, model):$/;"	m	class:Sampler
 sample_new_topic	.\sampler.py	/^	def sample_new_topic(self, topic_distributions):$/;"	m	class:Sampler
+save_inference_result	.\model.py	/^	def save_inference_result(self, inference_result_name):$/;"	m	class:Model
 save_model	.\model.py	/^	def save_model(self, model_filename, word_id_map):$/;"	m	class:Model
 set_topic	.\document.py	/^		def set_topic(self, topic_index, new_topic):$/;"	m	class:Document.Iterator
 set_topic	.\document.py	/^	def set_topic(self, word_index, topic_index, new_topic):$/;"	m	class:Document
+sys	.\view_model.py	/^import sys$/;"	i
 topics	.\document.py	/^		def topics(self):$/;"	m	class:Document.Iterator
+usage	.\view_model.py	/^def usage():$/;"	f
+view_model	.\view_model.py	/^def view_model(model_file, result_file):$/;"	f
 word	.\document.py	/^		def word(self):$/;"	m	class:Document.Iterator
-word_topic_count	.\model.py	/^	def word_topic_count(self, word):$/;"	m	class:Model
+word_topic_count	.\model.py	/^	def word_topic_count(self):$/;"	m	class:Model
 word_topics	.\document.py	/^	def word_topics(self):$/;"	m	class:Document
 words	.\document.py	/^	def words(self):$/;"	m	class:Document

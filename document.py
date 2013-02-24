@@ -31,7 +31,6 @@ class Document(object):
 		self.__words = []
 		self.__word_ids = []
 		self.__word_topics = []
-		random.seed()
 
 	def load_document(self, data, word_id_map, num_topics):
 		"""document format
@@ -58,6 +57,29 @@ class Document(object):
 				self.__words.append(word)
 				self.__word_ids.append(word_id)
 				self.__word_topics.append(topics)
+
+	def load_document_for_inference(self, data, word_id_map, num_topics):
+		"""document format
+		word count word2 count word3 count and so on.
+		word,word2,word3 is not same.
+		Do not save |word| if |word_id_map| does not contain |word|.
+		"""
+		records = data.strip().split()
+		assert(len(records) % 2 == 0)
+		for index in range(len(records)):
+			if index % 2 == 0:
+				word = records[index]
+			else:
+				if word_id_map.has_key(word):
+					count = int(records[index])
+					topics = []
+					for i in range(count):
+						# sample random topic
+						topics.append(random.randint(0, num_topics - 1))
+					word_id = word_id_map[word]
+					self.__words.append(word)
+					self.__word_ids.append(word_id)
+					self.__word_topics.append(topics)
 
 	def words(self):
 		return self.__word_ids

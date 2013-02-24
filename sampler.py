@@ -8,9 +8,10 @@ from document import *
 
 class Sampler(object):
 	"""Sampler"""
-	def __init__(self, alpha, beta):
+	def __init__(self, alpha, beta, update_model=True):
 		self.__alpha = alpha
 		self.__beta = beta
+		self.__update_model = update_model
 
 	def init_model_given_corpus(self, corpus, model):
 		# init topic, term distribution
@@ -19,7 +20,7 @@ class Sampler(object):
 			iter = Document.Iterator(document)
 			while not iter.done():
 				for topic in iter.topics():
-					model.increment(m, topic, iter.word(), 1)
+					self.increment_model(model, m, topic, iter.word(), 1)
 				iter.next()
 
 	def sample_loop(self, corpus, model):
@@ -29,11 +30,11 @@ class Sampler(object):
 			while not iter.done():
 				for k in range(len(iter.topics())):
 					topic = iter.topics()[k]
-					model.decrement(m, topic, iter.word(), 1)
+					self.decrement_model(model, m, topic, iter.word(), 1)
 					topic_distributions = self.compute_topic_distributions(
 							model, m, topic, iter.word())
 					new_topic = self.sample_new_topic(topic_distributions)
-					model.increment(m, new_topic, iter.word(), 1)
+					self.increment_model(model, m, new_topic, iter.word(), 1)
 					iter.set_topic(k, new_topic)
 				iter.next()
 
@@ -105,3 +106,13 @@ class Sampler(object):
 			log_likehood_corpus += log_likehood
 			
 		return log_likehood_corpus
+
+	def increment_model(self, model, document, topic, word, count):
+		if self.__update_model:
+			model.increment_topic(topic, word, count)
+		model.increment_document_topic(document, topic, count)
+
+	def decrement_model(self, model, document, topic, word, count):
+		if self.__update_model:
+			model.decrement_topic(topic, word, count)
+		model.decrement_document_topic(document, topic, count)
