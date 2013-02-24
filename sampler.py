@@ -66,7 +66,7 @@ class Sampler(object):
 				return i
 		return -1
 
-	def compute_log_likehood(self, corpus, model):
+	def compute_log_likelihood(self, corpus, model):
 		"""Compute log P(corpus) = sum_d log P(d),
 		where log P(d) = sum_w log P(w), where P(w) = sum_z P(w|z)P(z|d).
 		"""

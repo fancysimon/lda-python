@@ -23,8 +23,8 @@ def parse_args():
 						default=10, help="total iterations")
 	parser.add_option("--burn_in_iterations", dest="burn_in_iterations", type="int", 
 						default=5, help="burn in iterations")
-	parser.add_option("--compute_loglikehood", dest="compute_loglikehood", action="store_true",
-						help="compute loglikehood")
+	parser.add_option("--compute_likelihood", dest="compute_likelihood", action="store_true",
+						help="compute log likelihood")
 
 	(options, args) = parser.parse_args()
 	if not options.num_topics:
@@ -63,8 +63,8 @@ def main():
 	for i in range(options.total_iterations):
 		print "Iteration:", i
 		sampler.sample_loop(corpus, model)
-		if options.compute_loglikehood:
-			print "    Loglikehood:", sampler.compute_log_likehood(corpus, model)
+		if options.compute_likelihood:
+			print "    Loglikehood:", sampler.compute_log_likelihood(corpus, model)
 		if i >= options.burn_in_iterations:
 			model.accumulate_model()
 	model.average_accumulative_model()
