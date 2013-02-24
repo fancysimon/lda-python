@@ -12,7 +12,12 @@ class Model(object):
 		self.__word_topic_count = [[0]*num_topics for i in range(num_words)]
 		self.__golobal_topic_count = [0]*num_topics
 
-	def load_model(self, model_filename, word_id_map):
+		self.__num_accumulations = 0
+		self.__accumulative_word_topic_count = [[0]*num_topics for i in range(num_words)]
+		self.__accumulative_golobal_topic_count = [0]*num_topics
+
+	def load_model(self, model_filename):
+		word_id_map = {}
 		model_file = open(model_filename, "r")
 		self.__word_topic_count = []
 		for line in model_file:
@@ -34,6 +39,7 @@ class Model(object):
 				self.__golobal_topic_count[topic] += topic_counts[topic]
 
 		model_file.close()
+		return num_topics, word_id_map
 
 	def increment(self, document, topic, word, count):
 		self.__document_topic_count[document][topic] += count
@@ -69,8 +75,27 @@ class Model(object):
 		# write word and it's topic distribution
 		for word_id in range(self.num_words()):
 			model_file.write(id_word_map[word_id] + "\t")
-			for count in self.__word_topic_count[word_id]:
+			for count in self.__accumulative_word_topic_count[word_id]:
 				model_file.write(str(count) + " ")
 			model_file.write("\n")
 		model_file.close()
+
+	def accumulate_model(self):
+		for word in range(self.num_words()):
+			for topic in range(self.num_topics()):
+				self.__accumulative_word_topic_count[word][topic] += \
+						self.__word_topic_count[word][topic]
+		for topic in range(self.num_topics()):
+			self.__accumulative_golobal_topic_count[topic] += \
+					self.__golobal_topic_count[topic]
+		self.__num_accumulations += 1
+
+	def average_accumulative_model(self):
+		for word in range(self.num_words()):
+			for topic in range(self.num_topics()):
+				self.__accumulative_word_topic_count[word][topic] /= \
+						1.0 * self.__num_accumulations
+		for topic in range(self.num_topics()):
+			self.__accumulative_golobal_topic_count[topic] /= \
+					1.0 * self.__num_accumulations
 

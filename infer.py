@@ -7,6 +7,7 @@ from optparse import OptionParser
 from document import *
 from model import *
 from sampler import *
+import lda
 
 def parse_args():
 	parser = OptionParser()
@@ -30,8 +31,8 @@ def parse_args():
 def main():
 	options = parse_args()
 	model = Model()
-	word_id_map = {}
-	model.load_model(options.model_name, word_id_map)
+	num_topics, word_id_map = model.load_model(options.model_name)
+	
 
 if __name__ == "__main__":
 	main()

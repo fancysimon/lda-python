@@ -63,6 +63,9 @@ def main():
 		sampler.sample_loop(corpus, model)
 		if options.compute_loglikehood:
 			print "    Loglikehood:", sampler.compute_log_likehood(corpus, model)
+		if i > options.burn_in_iterations:
+			model.accumulate_model()
+	model.average_accumulative_model()
 	model.save_model(options.model_name, word_id_map)
 
 if __name__ == "__main__":

@@ -46,7 +46,7 @@ class Sampler(object):
 		document_topic_count = model.document_topic_count()
 		for topic in range(num_topics):
 			topic_distributions[topic] = \
-					(word_topic_count[topic] + self.__beta) * \
+					(word_topic_count[topic] + self.__beta) * 1.0 * \
 					(document_topic_count[document_id][topic] + self.__alpha) / \
 					(golobal_topic_count[topic] + num_words * self.__beta)
 		return topic_distributions
@@ -79,7 +79,8 @@ class Sampler(object):
 			document_topic_sum = sum(model.document_topic_count()[document_id])
 			for topic in range(num_topics):
 				prob_topic_given_document.append(
-						(model.document_topic_count()[document_id][topic] + self.__alpha) /
+						(model.document_topic_count()[document_id][topic] + \
+						self.__alpha) * 1.0 / \
 						(document_topic_sum + self.__alpha * num_topics))
 
 			log_likehood = 0.0
@@ -90,7 +91,7 @@ class Sampler(object):
 				word_topic_sum = sum(model.word_topic_count()[word])
 				for topic in range(num_topics):
 					prob_word_given_topic.append(
-							(model.word_topic_count()[word][topic] + self.__beta) /
+							(model.word_topic_count()[word][topic] + self.__beta) * 1.0 /
 							(word_topic_sum + self.__beta * num_topics))
 
 				# Compute P(w) = sum_z P(w|z)P(z|d)
