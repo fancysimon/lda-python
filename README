@@ -1,5 +1,1 @@
 LDA in python
-
-TODO:
-1. Compute model parameters by averaging a number of samples.
-   In this version, just use only one sample read out. 
