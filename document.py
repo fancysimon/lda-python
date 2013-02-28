@@ -58,6 +58,32 @@ class Document(object):
 				self.__word_ids.append(word_id)
 				self.__word_topics.append(topics)
 
+	def load_document_for_distribute(self, data, num_topics, word_set, only_update_word_set=False):
+		"""document format
+		word count word2 count word3 count and so on.
+		word,word2,word3 is not same.
+
+		word-id firstly set to -1, because different processer may receive
+		document in different order.
+		"""
+		records = data.strip().split()
+		assert(len(records) % 2 == 0)
+		for index in range(len(records)):
+			if index % 2 == 0:
+				word = records[index]
+			else:
+				count = int(records[index])
+				if not only_update_word_set:
+					topics = []
+					for i in range(count):
+						# sample random topic
+						topics.append(random.randint(0, num_topics - 1))
+
+					self.__words.append(word)
+					self.__word_ids.append(-1)
+					self.__word_topics.append(topics)
+				word_set.add(word)
+
 	def load_document_for_inference(self, data, word_id_map, num_topics):
 		"""document format
 		word count word2 count word3 count and so on.
@@ -96,3 +122,8 @@ class Document(object):
 
 	def set_topic(self, word_index, topic_index, new_topic):
 		self.__word_topics[word_index][topic_index] = new_topic
+
+	def reset_word_ids(self, word_id_map):
+		for i in range(len(self.words())):
+			if word_id_map.has_key(self.__words[i]):
+				self.__word_ids[i] = word_id_map[self.__words[i]]
