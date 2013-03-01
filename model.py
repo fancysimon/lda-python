@@ -2,6 +2,8 @@
 #
 # LDA Model
 
+import copy
+
 class Model(object):
 	"""LDA Model"""
 	def __init__(self):
@@ -77,8 +79,14 @@ class Model(object):
 	def word_topic_count(self):
 		return self.__word_topic_count
 
+	def set_word_topic_count(self, word_topic_count):
+		self.__word_topic_count = copy.deepcopy(word_topic_count)
+
 	def golobal_topic_count(self):
 		return self.__golobal_topic_count
+
+	def set_golobal_topic_count(self, golobal_topic_count):
+		self.__golobal_topic_count = copy.deepcopy(golobal_topic_count)
 
 	def num_topics(self):
 		return len(self.golobal_topic_count())

@@ -11,6 +11,22 @@ from document import *
 from model import *
 from sampler import *
 
+class ParallelModel(Model):
+	"""Parllel model"""
+	def __init__(self):
+		Model.__init__()
+
+	def AllReduceModel(self, comm):
+		num_topics = self.num_topics()
+		num_words = self.num_words()
+		temp_word_topic_count = [[0]*num_topics for i in range(num_words)]
+		temp_golobal_topic_count = [0]*num_topics
+		comm.Allreduce(self.word_topic_count(), temp_word_topic_count, MPI.SUM)
+		comm.Allreduce(self.golobal_topic_count(), temp_golobal_topic_count,
+						MPI.SUM)
+		self.set_word_topic_count(temp_word_topic_count)
+		self.set_golobal_topic_count(temp_golobal_topic_count)
+
 def parse_args():
 	parser = OptionParser()
 
@@ -71,20 +87,21 @@ def main():
 	comm = MPI.COMM_WORLD
 	pnum = comm.Get_size()
 	myid = comm.Get_rank()
-	corpus, word_id_map = distributely_load_corpus(
+	corpus_local, word_id_map = distributely_load_corpus(
 			options.train_name, options.num_topics, myid, pnum)
-	# for d in corpus:
+	# for d in corpus_local:
 	# 	print d.debug_string()
 
 	sampler = Sampler(options.alpha, options.beta)
-	model = Model()
-	model.init_model(len(corpus), options.num_topics, len(word_id_map))
-	sampler.init_model_given_corpus(corpus, model)
+	model = ParallelModel()
+	model.init_model(len(corpus_local), options.num_topics, len(word_id_map))
+	sampler.init_model_given_corpus(corpus_local, model)
+	mode.AllReduceModel(comm)
 	for i in range(options.total_iterations):
 		print "Iteration:", i
-		sampler.sample_loop(corpus, model)
-		if options.compute_likelihood:
-			print "    Loglikehood:", sampler.compute_log_likelihood(corpus, model)
+		sampler.sample_loop(corpus_local, model)
+		# if options.compute_likelihood:
+		# 	print "    Loglikehood:", sampler.compute_log_likelihood(corpus_local, model)
 		if i >= options.burn_in_iterations:
 			model.accumulate_model()
 	model.average_accumulative_model()
