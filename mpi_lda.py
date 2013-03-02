@@ -14,18 +14,40 @@ from sampler import *
 class ParallelModel(Model):
 	"""Parllel model"""
 	def __init__(self):
-		Model.__init__()
+		Model.__init__(self)
+		self.__op = MPI.Op.Create(list_sum)
+		self.__op2 = MPI.Op.Create(list2d_sum)
 
-	def AllReduceModel(self, comm):
+	def __del__(self):
+		self.__op.Free()
+		self.__op2.Free()
+
+	def allreduce_model(self, comm):
 		num_topics = self.num_topics()
 		num_words = self.num_words()
 		temp_word_topic_count = [[0]*num_topics for i in range(num_words)]
 		temp_golobal_topic_count = [0]*num_topics
-		comm.Allreduce(self.word_topic_count(), temp_word_topic_count, MPI.SUM)
-		comm.Allreduce(self.golobal_topic_count(), temp_golobal_topic_count,
-						MPI.SUM)
+		temp_word_topic_count = comm.allreduce(
+				self.word_topic_count(), temp_word_topic_count, self.__op2)
+		temp_golobal_topic_count = comm.allreduce(
+				self.golobal_topic_count(),
+				temp_golobal_topic_count, self.__op)
 		self.set_word_topic_count(temp_word_topic_count)
 		self.set_golobal_topic_count(temp_golobal_topic_count)
+
+def list_sum(a, b, dt):
+	assert(len(a) == len(b))
+	for i in range(len(a)):
+		b[i] += a[i]
+	return b
+
+def list2d_sum(a, b, dt):
+	assert(len(a) == len(b))
+	for i in range(len(a)):
+		assert(len(a[i]) == len(b[i]))
+		for j in range(len(a[i])):
+			b[i][j] += a[i][j]
+	return b
 
 def parse_args():
 	parser = OptionParser()
@@ -66,8 +88,8 @@ def distributely_load_corpus(train_name, num_topics, myid, pnum):
 		if len(line) == 0 or line[0] == "\n" or \
 				line[0] == "\r" or line[0] == "#":
 			continue
+		document = Document()
 		if index % pnum == myid:
-			document = Document()
 			document.load_document_for_distribute(line, num_topics, word_set)
 			corpus.append(document)
 		else:
@@ -98,28 +120,27 @@ def main():
 
 	sampler = Sampler(options.alpha, options.beta)
 	for i in range(options.total_iterations):
-		print "Iteration:", i
+		if myid == 0:
+			print "Iteration:", i
 		model = ParallelModel()
 		model.init_model(len(corpus_local), options.num_topics, len(word_id_map))
 		sampler.init_model_given_corpus(corpus_local, model)
-		model.AllReduceModel(comm)
+		model.allreduce_model(comm)
 		sampler.sample_loop(corpus_local, model)
 		if options.compute_likelihood:
-			loglikelihood_local =
+			loglikelihood_local = \
 					sampler.compute_log_likelihood(corpus_local, model)
-			loglikelihood_gobal = 0.0
-			comm.Reduce(loglikelihood_local, loglikelihood_gobal, MPI.SUM, 0)
+			loglikelihood_golobal = 0.0
+			loglikelihood_golobal = comm.reduce(
+					loglikelihood_local, loglikelihood_golobal, MPI.SUM, 0)
 			if myid == 0:
-				print "    Loglikehood:", loglikelihood_gobal
-		if i >= options.burn_in_iterations:
-			model.accumulate_model()
+				print "    Loglikehood:", loglikelihood_golobal
 	model = ParallelModel()
 	model.init_model(len(corpus_local), options.num_topics, len(word_id_map))
 	sampler.init_model_given_corpus(corpus_local, model)
-	model.AllReduceModel(comm)
+	model.allreduce_model(comm)
 	if myid == 0:
-		model.average_accumulative_model()
-		model.save_model(options.model_name, word_id_map)
+		model.save_model(options.model_name, word_id_map, False)
 
 if __name__ == "__main__":
 	main()

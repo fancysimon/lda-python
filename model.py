@@ -97,15 +97,19 @@ class Model(object):
 	def num_documents(self):
 		return len(self.document_topic_count())
 
-	def save_model(self, model_filename, word_id_map):
+	def save_model(self, model_filename, word_id_map, is_accumulative=True):
 		model_file = open(model_filename, "w")
 		id_word_map = [0] * len(word_id_map)
 		for word, id in word_id_map.items():
 			id_word_map[id] = word
+		if is_accumulative:
+			word_topic_count = self.__accumulative_word_topic_count
+		else:
+			word_topic_count = self.__word_topic_count
 		# write word and it's topic distribution
 		for word_id in range(self.num_words()):
 			model_file.write(id_word_map[word_id] + "\t")
-			for count in self.__accumulative_word_topic_count[word_id]:
+			for count in word_topic_count[word_id]:
 				model_file.write(str(count) + " ")
 			model_file.write("\n")
 		model_file.close()
