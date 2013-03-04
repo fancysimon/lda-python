@@ -28,3 +28,4 @@ TODO
 2. Comment.
 3. Asymmetric alpha(document topic distribution prior).
 4. Accumulative model for MPI.
+5. 支持对中文聚类.
