@@ -20,3 +20,11 @@ AUTHOR: fancysimon <fancysimon@gmail.com>
 	mpiexec -n 2 -hosts "192.168.1.2,192.168.1.3" python mpi_lda.py -a 0.01 -b 0.1
 			--train_name=train2.txt --compute_likelihood --total_iterations=100
 			--burn_in_iterations=70
+
+TODO
+----
+
+1. Check point for mpi.
+2. Comment.
+3. Asymmetric alpha(document topic distribution prior).
+4. Accumulative model for MPI.
