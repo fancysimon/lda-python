@@ -9,6 +9,8 @@ from document import *
 from model import *
 from sampler import *
 
+likelihood_name = 'likelihood.txt'
+
 def parse_args():
 	parser = OptionParser()
 
@@ -59,6 +61,8 @@ def main():
 	# for d in corpus:
 	# 	print d.debug_string()
 
+	likelihood_file = open(likelihood_name, 'w')
+
 	sampler = Sampler(options.alpha, options.beta)
 	model = Model()
 	model.init_model(len(corpus), options.num_topics, len(word_id_map))
@@ -67,12 +71,15 @@ def main():
 		print "Iteration:", i
 		sampler.sample_loop(corpus, model)
 		if options.compute_likelihood:
-			print "    Loglikehood:", \
-					sampler.compute_log_likelihood(corpus, model)
+			likelihood = sampler.compute_log_likelihood(corpus, model)
+			print "    Loglikehood:", likelihood
+			likelihood_file.write(str(likelihood))
+			likelihood_file.write('\n')
 		if i >= options.burn_in_iterations:
 			model.accumulate_model()
 	model.average_accumulative_model()
 	model.save_model(options.model_name, word_id_map)
+	likelihood_file.close()
 
 if __name__ == "__main__":
 	main()
