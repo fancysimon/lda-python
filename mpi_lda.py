@@ -11,6 +11,8 @@ from document import *
 from model import *
 from sampler import *
 
+likelihood_name = 'likelihood.txt'
+
 class ParallelModel(Model):
 	"""Parllel model"""
 	def __init__(self):
@@ -118,6 +120,9 @@ def main():
 	# for d in corpus_local:
 	# 	print d.debug_string()
 
+	if myid == 0:
+		likelihood_file = open(likelihood_name, 'w')
+
 	sampler = Sampler(options.alpha, options.beta)
 	for i in range(options.total_iterations):
 		if myid == 0:
@@ -135,12 +140,15 @@ def main():
 					loglikelihood_local, loglikelihood_golobal, MPI.SUM, 0)
 			if myid == 0:
 				print "    Loglikehood:", loglikelihood_golobal
+				likelihood_file.write(str(loglikelihood_golobal))
+				likelihood_file.write('\n')
 	model = ParallelModel()
 	model.init_model(len(corpus_local), options.num_topics, len(word_id_map))
 	sampler.init_model_given_corpus(corpus_local, model)
 	model.allreduce_model(comm)
 	if myid == 0:
 		model.save_model(options.model_name, word_id_map, False)
+		likelihood_file.close()
 
 if __name__ == "__main__":
 	main()
