@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#
+# Author: Chao Xiong <fancysimon@gmail.com>
 # Document for LDA
 
 import random

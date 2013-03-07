@@ -2,7 +2,7 @@ LDA in python
 =============
 
 
-AUTHOR: fancysimon <fancysimon@gmail.com>
+AUTHOR: Chao Xiong <fancysimon@gmail.com>
 
 
 使用

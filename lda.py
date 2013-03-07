@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#
+# Author: Chao Xiong <fancysimon@gmail.com>
 # LDA
 
 from optparse import OptionParser

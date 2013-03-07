@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#
+# Author: Chao Xiong <fancysimon@gmail.com>
 # MPI LDA
 
 from optparse import OptionParser
