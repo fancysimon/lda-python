@@ -61,33 +61,43 @@ def load_corpus(train_name, num_topics):
 def main():
 	options = parse_args()
 	random.seed()
-	corpus, word_id_map = load_corpus(options.train_name, options.num_topics)
+	
 	# for d in corpus:
 	# 	print d.debug_string()
-
-	likelihood_file = open(likelihood_name, 'w')
+	
 	sampler = None
 	model = None
+	corpus = None
+	word_id_map = None
+	next_iteration = 0
+	likelihoods = []
 	if options.restart_by_checkpoint:
-
+		checkpoint = CheckPoint()
+		(model, sampler, corpus, word_id_map, likelihoods,
+				next_iteration) = checkpoint.load()
 	else:
+		corpus, word_id_map = load_corpus(options.train_name, options.num_topics)
 		sampler = Sampler(options.alpha, options.beta)
 		model = Model()
 		model.init_model(len(corpus), options.num_topics, len(word_id_map))
 		sampler.init_model_given_corpus(corpus, model)
-	for i in range(options.total_iterations):
+	for i in range(next_iteration, options.total_iterations):
 		print "Iteration:", i
 		sampler.sample_loop(corpus, model)
 		if options.compute_likelihood:
 			likelihood = sampler.compute_log_likelihood(corpus, model)
 			print "    Loglikehood:", likelihood
-			likelihood_file.write(str(likelihood))
-			likelihood_file.write('\n')
+			likelihoods.append(likelihood)
+			
 		if i >= options.burn_in_iterations:
 			model.accumulate_model()
 	model.average_accumulative_model()
 	model.save_model(options.model_name, word_id_map)
-	likelihood_file.close()
+
+	if options.compute_likelihood:
+		likelihood_file = open(likelihood_name, 'w')
+		likelihood_file.writelines([str(x)+'\n' for x in likelihoods])
+		likelihood_file.close()
 
 if __name__ == "__main__":
 	main()
