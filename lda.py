@@ -29,6 +29,10 @@ def parse_args():
 						type="int", default=5, help="burn in iterations")
 	parser.add_option("--compute_likelihood", dest="compute_likelihood",
 						action="store_true", help="compute log likelihood")
+	parser.add_option("--checkpoint_interval", dest="checkpoint_interval",
+						type="int", default=0, help="checkpoint interval")
+	parser.add_option("--restart_by_checkpoint", dest="restart_by_checkpoint",
+						action="store_true", help="restart by checkpoint")
 
 	(options, args) = parser.parse_args()
 	if not options.num_topics:
@@ -62,11 +66,15 @@ def main():
 	# 	print d.debug_string()
 
 	likelihood_file = open(likelihood_name, 'w')
+	sampler = None
+	model = None
+	if options.restart_by_checkpoint:
 
-	sampler = Sampler(options.alpha, options.beta)
-	model = Model()
-	model.init_model(len(corpus), options.num_topics, len(word_id_map))
-	sampler.init_model_given_corpus(corpus, model)
+	else:
+		sampler = Sampler(options.alpha, options.beta)
+		model = Model()
+		model.init_model(len(corpus), options.num_topics, len(word_id_map))
+		sampler.init_model_given_corpus(corpus, model)
 	for i in range(options.total_iterations):
 		print "Iteration:", i
 		sampler.sample_loop(corpus, model)
