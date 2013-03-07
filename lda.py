@@ -8,6 +8,7 @@ import random
 from document import *
 from model import *
 from sampler import *
+from check_point import CheckPointer
 
 likelihood_name = 'likelihood.txt'
 
@@ -71,10 +72,10 @@ def main():
 	word_id_map = None
 	next_iteration = 0
 	likelihoods = []
+	checkpointer = CheckPointer()
 	if options.restart_by_checkpoint:
-		checkpoint = CheckPoint()
 		(model, sampler, corpus, word_id_map, likelihoods,
-				next_iteration) = checkpoint.load()
+				next_iteration) = checkpointer.load()
 	else:
 		corpus, word_id_map = load_corpus(options.train_name, options.num_topics)
 		sampler = Sampler(options.alpha, options.beta)
@@ -91,6 +92,12 @@ def main():
 			
 		if i >= options.burn_in_iterations:
 			model.accumulate_model()
+		if options.checkpoint_interval > 0:
+			interval = options.checkpoint_interval
+			if i % interval == interval - 1:
+				checkpointer.dump(model, sampler, corpus, word_id_map,
+									likelihoods, i + 1)
+
 	model.average_accumulative_model()
 	model.save_model(options.model_name, word_id_map)
 
