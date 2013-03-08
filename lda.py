@@ -63,9 +63,6 @@ def main():
 	options = parse_args()
 	random.seed()
 	
-	# for d in corpus:
-	# 	print d.debug_string()
-	
 	sampler = None
 	model = None
 	corpus = None
@@ -77,7 +74,8 @@ def main():
 		(model, sampler, corpus, word_id_map, likelihoods,
 				next_iteration) = checkpointer.load()
 	else:
-		corpus, word_id_map = load_corpus(options.train_name, options.num_topics)
+		corpus, word_id_map = load_corpus(
+				options.train_name, options.num_topics)
 		sampler = Sampler(options.alpha, options.beta)
 		model = Model()
 		model.init_model(len(corpus), options.num_topics, len(word_id_map))

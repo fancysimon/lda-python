@@ -10,8 +10,42 @@ from mpi4py import MPI
 from document import *
 from model import *
 from sampler import *
+from check_point import CheckPointer
 
 likelihood_name = 'likelihood.txt'
+
+def parse_args():
+	parser = OptionParser()
+
+	parser.add_option("-a", "--alpha", dest="alpha", type="float", help="alpha")
+	parser.add_option("-b", "--beta", dest="beta", type="float",
+						default=0.01, help="beta")
+	parser.add_option("-k", "--num_topics", dest="num_topics", type="int",
+						help="topic numbers")
+	parser.add_option("--train_name", dest="train_name", type="string",
+						default="train.txt", help="file name of taining data")
+	parser.add_option("--model_name", dest="model_name", type="string",
+						default="model.txt", help="file prefix of model")
+	parser.add_option("--total_iterations", dest="total_iterations", type="int", 
+						default=10, help="total iterations")
+	parser.add_option("--burn_in_iterations", dest="burn_in_iterations",
+						type="int", default=5, help="burn in iterations")
+	parser.add_option("--compute_likelihood", dest="compute_likelihood",
+						action="store_true", help="compute log likelihood")
+	parser.add_option("--checkpoint_interval", dest="checkpoint_interval",
+						type="int", default=0, help="checkpoint interval")
+	parser.add_option("--restart_by_checkpoint", dest="restart_by_checkpoint",
+						action="store_true", help="restart by checkpoint")
+	
+	(options, args) = parser.parse_args()
+	if not options.num_topics:
+		print "num_topics must be specified.\n"
+		parser.print_help()
+		exit(1)
+	if not options.alpha:
+		options.alpha = 50.0 / options.num_topics
+
+	return options
 
 class ParallelModel(Model):
 	"""Parllel model"""
@@ -51,35 +85,6 @@ def list2d_sum(a, b, dt):
 			b[i][j] += a[i][j]
 	return b
 
-def parse_args():
-	parser = OptionParser()
-
-	parser.add_option("-a", "--alpha", dest="alpha", type="float", help="alpha")
-	parser.add_option("-b", "--beta", dest="beta", type="float",
-						default=0.01, help="beta")
-	parser.add_option("-k", "--num_topics", dest="num_topics", type="int",
-						help="topic numbers")
-	parser.add_option("--train_name", dest="train_name", type="string",
-						default="train.txt", help="file name of taining data")
-	parser.add_option("--model_name", dest="model_name", type="string",
-						default="model.txt", help="file prefix of model")
-	parser.add_option("--total_iterations", dest="total_iterations", type="int", 
-						default=10, help="total iterations")
-	parser.add_option("--burn_in_iterations", dest="burn_in_iterations",
-						type="int", default=5, help="burn in iterations")
-	parser.add_option("--compute_likelihood", dest="compute_likelihood",
-						action="store_true", help="compute log likelihood")
-
-	(options, args) = parser.parse_args()
-	if not options.num_topics:
-		print "num_topics must be specified.\n"
-		parser.print_help()
-		exit(1)
-	if not options.alpha:
-		options.alpha = 50.0 / options.num_topics
-
-	return options
-
 def distributely_load_corpus(train_name, num_topics, myid, pnum):
 	train_file = open(train_name, "r")
 	corpus = []
@@ -115,16 +120,24 @@ def main():
 	comm = MPI.COMM_WORLD
 	pnum = comm.Get_size()
 	myid = comm.Get_rank()
-	corpus_local, word_id_map = distributely_load_corpus(
-			options.train_name, options.num_topics, myid, pnum)
-	# for d in corpus_local:
-	# 	print d.debug_string()
 
-	if myid == 0:
-		likelihood_file = open(likelihood_name, 'w')
+	sampler = None
+	model = None
+	corpus_local = None
+	word_id_map = None
+	next_iteration = 0
+	likelihoods = []
+	checkpointer = CheckPointer()
 
-	sampler = Sampler(options.alpha, options.beta)
-	for i in range(options.total_iterations):
+	if options.restart_by_checkpoint:
+		(model, sampler, corpus_local, word_id_map, likelihoods,
+				next_iteration) = checkpointer.load()
+	else:
+		corpus_local, word_id_map = distributely_load_corpus(
+				options.train_name, options.num_topics, myid, pnum)
+		sampler = Sampler(options.alpha, options.beta)
+
+	for i in range(next_iteration, options.total_iterations):
 		if myid == 0:
 			print "Iteration:", i
 		model = ParallelModel()
@@ -140,14 +153,16 @@ def main():
 					loglikelihood_local, loglikelihood_golobal, MPI.SUM, 0)
 			if myid == 0:
 				print "    Loglikehood:", loglikelihood_golobal
-				likelihood_file.write(str(loglikelihood_golobal))
-				likelihood_file.write('\n')
+				likelihoods.append(loglikelihood_golobal)
 	model = ParallelModel()
 	model.init_model(len(corpus_local), options.num_topics, len(word_id_map))
 	sampler.init_model_given_corpus(corpus_local, model)
 	model.allreduce_model(comm)
+		
 	if myid == 0:
 		model.save_model(options.model_name, word_id_map, False)
+		likelihood_file = open(likelihood_name, 'w')
+		likelihood_file.writelines([str(x)+'\n' for x in likelihoods])
 		likelihood_file.close()
 
 if __name__ == "__main__":
