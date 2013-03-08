@@ -73,6 +73,7 @@ def main():
 	if options.restart_by_checkpoint:
 		(model, sampler, corpus, word_id_map, likelihoods,
 				next_iteration) = checkpointer.load()
+		print "Restart at iteration:", next_iteration
 	else:
 		corpus, word_id_map = load_corpus(
 				options.train_name, options.num_topics)
@@ -95,6 +96,7 @@ def main():
 			if i % interval == interval - 1:
 				checkpointer.dump(model, sampler, corpus, word_id_map,
 									likelihoods, i + 1)
+				print "    Save check point."
 
 	model.average_accumulative_model()
 	model.save_model(options.model_name, word_id_map)

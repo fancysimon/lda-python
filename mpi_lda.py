@@ -51,23 +51,17 @@ class ParallelModel(Model):
 	"""Parllel model"""
 	def __init__(self):
 		Model.__init__(self)
-		self.__op = MPI.Op.Create(list_sum)
-		self.__op2 = MPI.Op.Create(list2d_sum)
 
-	def __del__(self):
-		self.__op.Free()
-		self.__op2.Free()
-
-	def allreduce_model(self, comm):
+	def allreduce_model(self, comm, op, op2):
 		num_topics = self.num_topics()
 		num_words = self.num_words()
 		temp_word_topic_count = [[0]*num_topics for i in range(num_words)]
 		temp_golobal_topic_count = [0]*num_topics
 		temp_word_topic_count = comm.allreduce(
-				self.word_topic_count(), temp_word_topic_count, self.__op2)
+				self.word_topic_count(), temp_word_topic_count, op2)
 		temp_golobal_topic_count = comm.allreduce(
 				self.golobal_topic_count(),
-				temp_golobal_topic_count, self.__op)
+				temp_golobal_topic_count, op)
 		self.set_word_topic_count(temp_word_topic_count)
 		self.set_golobal_topic_count(temp_golobal_topic_count)
 
@@ -121,6 +115,9 @@ def main():
 	pnum = comm.Get_size()
 	myid = comm.Get_rank()
 
+	op = MPI.Op.Create(list_sum)
+	op2 = MPI.Op.Create(list2d_sum)
+
 	sampler = None
 	model = None
 	corpus_local = None
@@ -132,6 +129,8 @@ def main():
 	if options.restart_by_checkpoint:
 		(model, sampler, corpus_local, word_id_map, likelihoods,
 				next_iteration) = checkpointer.load()
+		if myid == 0:
+			print "Restart at iteration:", next_iteration
 	else:
 		corpus_local, word_id_map = distributely_load_corpus(
 				options.train_name, options.num_topics, myid, pnum)
@@ -143,7 +142,7 @@ def main():
 		model = ParallelModel()
 		model.init_model(len(corpus_local), options.num_topics, len(word_id_map))
 		sampler.init_model_given_corpus(corpus_local, model)
-		model.allreduce_model(comm)
+		model.allreduce_model(comm, op, op2)
 		sampler.sample_loop(corpus_local, model)
 		if options.compute_likelihood:
 			loglikelihood_local = \
@@ -154,16 +153,27 @@ def main():
 			if myid == 0:
 				print "    Loglikehood:", loglikelihood_golobal
 				likelihoods.append(loglikelihood_golobal)
+
+		if options.checkpoint_interval > 0:
+			interval = options.checkpoint_interval
+			if i % interval == interval - 1:
+				checkpointer.dump(model, sampler, corpus_local, word_id_map,
+									likelihoods, i + 1)
+				if myid == 0:
+					print "    Save check point."
 	model = ParallelModel()
 	model.init_model(len(corpus_local), options.num_topics, len(word_id_map))
 	sampler.init_model_given_corpus(corpus_local, model)
-	model.allreduce_model(comm)
+	model.allreduce_model(comm, op, op2)
 		
 	if myid == 0:
 		model.save_model(options.model_name, word_id_map, False)
 		likelihood_file = open(likelihood_name, 'w')
 		likelihood_file.writelines([str(x)+'\n' for x in likelihoods])
 		likelihood_file.close()
+
+	op.Free()
+	op2.Free()
 
 if __name__ == "__main__":
 	main()
